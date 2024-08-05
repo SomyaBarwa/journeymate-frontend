@@ -6,7 +6,7 @@ export default function WelcomeScreen({ navigation }) {
         navigation.navigate('Login');
     }
     return (
-        <SafeAreaView style={styles.container2}>
+        <SafeAreaView style={styles.container}>
             <View style={styles.headerContainer}>
                 <Text style={styles.header}>Welcome</Text>
                 <Text style={styles.header}>Journey Mate</Text>
@@ -23,7 +23,7 @@ export default function WelcomeScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-    container2: {
+    container: {
         flex: 1,
         alignItems: 'center',
         justifyContent: "space-between",
@@ -58,7 +58,6 @@ const styles = StyleSheet.create({
         zIndex: -1,
         padding: 0,
         width: "100%",
-        // height: "100%",
 
     },
     btnContainer: {

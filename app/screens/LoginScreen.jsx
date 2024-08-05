@@ -6,30 +6,45 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 
-export default function LoginScreen({navigation}) {
+export default function LoginScreen({ navigation }) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const navigateToHome = () => {
-    navigation.navigate("Home");
+    console.log(email, password);
   };
   const navigateToRegister = () => {
     navigation.navigate("Home");
   };
   return (
     <SafeAreaView style={styles.container}>
+
       <View style={styles.headerContainer}>
         <Text style={styles.header}>Sign In</Text>
       </View>
       {/* <View> */}
-        <Text>Email address</Text>
-        <TextInput style={styles.input} placeholder="enter email" />
-        <Text>Password</Text>
-        <TextInput style={styles.input} placeholder="enter password" />
-        <TouchableOpacity style={styles.btnContainer} onPress={navigateToHome}>
-          <Text style={styles.btnText}>Sign In</Text>
-        </TouchableOpacity>
-        <Text>Dont have an account? <Text onPress={navigateToRegister}>Sign Up</Text></Text>
-
+      <Text>Email address</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="jogndoe@gmail.com"
+        value={email}
+        onChangeText={(text) => setEmail(text)}
+      />
+      <Text>Password</Text>
+      <TextInput
+        secureTextEntry
+        style={styles.input}
+        placeholder="enter password"
+        value={password}
+        onChangeText={(text) => setPassword(text)}
+      />
+      <TouchableOpacity style={styles.btnContainer} onPress={navigateToHome}>
+        <Text style={styles.btnText}>Sign In</Text>
+      </TouchableOpacity>
+      <Text>
+        Dont have an account? <Text onPress={navigateToRegister}>Sign Up</Text>
+      </Text>
     </SafeAreaView>
   );
 }
@@ -37,17 +52,15 @@ export default function LoginScreen({navigation}) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // justifyContent:"center",
     marginHorizontal: 20,
     alignItems: "left",
   },
-  inputView:{
+  inputView: {
     width: "100%",
   },
   input: {
     height: 40,
     width: "100%",
-    // margin: 12,
     marginVertical: 20,
     borderWidth: 1,
     padding: 10,
