@@ -15,29 +15,29 @@ export default function LoginScreen({ navigation }) {
     console.log(email, password);
   };
   const navigateToRegister = () => {
-    navigation.navigate("Home");
+    navigation.navigate("Register");
   };
   return (
     <SafeAreaView style={styles.container}>
-
       <View style={styles.headerContainer}>
         <Text style={styles.header}>Sign In</Text>
       </View>
-      {/* <View> */}
-      <Text>Email address</Text>
+      <Text style={styles.placeholderText}>Email address</Text>
       <TextInput
         style={styles.input}
         placeholder="jogndoe@gmail.com"
         value={email}
         onChangeText={(text) => setEmail(text)}
+        required
       />
-      <Text>Password</Text>
+      <Text style={styles.placeholderText}>Password</Text>
       <TextInput
         secureTextEntry
         style={styles.input}
         placeholder="enter password"
         value={password}
         onChangeText={(text) => setPassword(text)}
+        required
       />
       <TouchableOpacity style={styles.btnContainer} onPress={navigateToHome}>
         <Text style={styles.btnText}>Sign In</Text>
@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
   },
   inputView: {
     width: "100%",
-  },
+  },  
   input: {
     height: 40,
     width: "100%",
@@ -89,5 +89,9 @@ const styles = StyleSheet.create({
     color: "#fff",
     textAlign: "center",
     fontSize: 25,
+  },
+  placeholderText: {
+    fontSize: 25,
+    fontWeight: "300",
   },
 });
