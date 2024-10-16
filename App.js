@@ -9,6 +9,7 @@ import { useContext, useEffect } from 'react';
 import HomeScreen from './app/screens/HomeScreen';
 import LoginScreen from './app/screens/LoginScreen';
 import RegisterScreen from './app/screens/RegisterScreen';
+import CameraScreen from './app/screens/CameraScreen';
 
 const Stack = createStackNavigator();
 
@@ -20,6 +21,7 @@ export default function App() {
       <Stack.Navigator screenOptions={{ headerShown: false }}>
       
         <Stack.Screen name="Welcome" component={WelcomeScreen} />
+        <Stack.Screen name="CameraScreen" component={CameraScreen} />
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Register" component={RegisterScreen} />
         <Stack.Screen name="Home" component={HomeScreen} />

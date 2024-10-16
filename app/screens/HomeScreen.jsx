@@ -1,46 +1,9 @@
-import React, { useEffect, useState } from "react";
-import {
-  View,
-  SafeAreaView,
-  StyleSheet,
-  FlatList,
-  TouchableOpacity,
-  Text,
-  Alert,
-} from "react-native";
-import { Camera } from "expo-camera"; // Ensure expo-camera is correctly installed
-import Navbar from "../components/Navbar"; // Check this path
-import Card from "../components/Card"; // Check this path
+import React from "react";
+import { View, SafeAreaView, StyleSheet, FlatList, TouchableOpacity, Text } from "react-native";
+import Navbar from "../components/Navbar"; 
+import Card from "../components/Card"; 
 
-export default function HomeScreen() {
-  const [hasPermission, setHasPermission] = useState(null);
-  const [cameraVisible, setCameraVisible] = useState(false);
-  const [cameraRef, setCameraRef] = useState(null);
-
-  useEffect(() => {
-    (async () => {
-      const { status } = await Camera.requestCameraPermissionsAsync();
-      setHasPermission(status === "granted");
-    })();
-  }, []);
-
-  const capturePhoto = async () => {
-    if (cameraRef) {
-      const photo = await cameraRef.takePictureAsync();
-      console.log("Captured photo:", photo);
-      Alert.alert("Photo Captured", "You have successfully captured a photo.");
-      setCameraVisible(false); // Hide camera after taking a picture
-    }
-  };
-
-  if (hasPermission === null) {
-    return <View />; // Waiting for permission
-  }
-  if (hasPermission === false) {
-    return <Text>No access to camera</Text>; // No access to camera
-  }
-
-  // Example card data array
+export default function HomeScreen({ navigation }) {
   const cardsData = [
     { id: 1, title: "Card 1" },
     { id: 2, title: "Card 2" },
@@ -48,7 +11,11 @@ export default function HomeScreen() {
     { id: 4, title: "Card 4" },
   ];
 
-  const renderCard = ({ item }) => <Card title={item.title} />; // Make sure Card is defined
+  const openCamera = () => {
+    navigation.navigate('CameraScreen'); 
+  };
+
+  const renderCard = ({ item }) => <Card title={item.title} />; 
 
   return (
     <SafeAreaView style={styles.container}>
@@ -66,24 +33,12 @@ export default function HomeScreen() {
           snapToInterval={200} // Adjust based on card width + margin
           pagingEnabled
         />
-        {cameraVisible ? (
-          <Camera style={styles.camera} ref={(ref) => setCameraRef(ref)}>
-            <View style={styles.cameraContainer}>
-              <TouchableOpacity style={styles.button} onPress={capturePhoto}>
-                <Text style={styles.buttonText}>Capture</Text>
-              </TouchableOpacity>
-            </View>
-          </Camera>
-        ) : (
-          <View style={styles.footerContainer}>
-            <TouchableOpacity
-              style={styles.btnContainer}
-              onPress={() => setCameraVisible(true)} // Show camera on press
-            >
-              <Text style={styles.btnText}>Start your ride</Text>
-            </TouchableOpacity>
-          </View>
-        )}
+
+        <View style={styles.footerContainer}>
+          <TouchableOpacity style={styles.btnContainer} onPress={openCamera}>
+            <Text style={styles.btnText}>Start your ride</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -117,25 +72,6 @@ const styles = StyleSheet.create({
   },
   carousel: {
     paddingVertical: 10,
-  },
-  camera: {
-    width: "100%",
-    height: 400, // Adjust height as necessary
-  },
-  cameraContainer: {
-    flex: 1,
-    justifyContent: "flex-end",
-    alignItems: "center",
-  },
-  button: {
-    backgroundColor: "#3B71F3",
-    padding: 15,
-    borderRadius: 10,
-    marginBottom: 20,
-  },
-  buttonText: {
-    color: "#fff",
-    fontSize: 18,
   },
   footerContainer: {
     position: "absolute",
