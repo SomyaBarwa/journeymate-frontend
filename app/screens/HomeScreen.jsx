@@ -1,21 +1,28 @@
 import React from "react";
-import { View, SafeAreaView, StyleSheet, FlatList, TouchableOpacity, Text } from "react-native";
-import Navbar from "../components/Navbar"; 
-import Card from "../components/Card"; 
+import {
+  View,
+  SafeAreaView,
+  StyleSheet,
+  FlatList,
+  TouchableOpacity,
+  Text,
+} from "react-native";
+import Navbar from "../components/Navbar";
+import Card from "../components/Card";
 
 export default function HomeScreen({ navigation }) {
   const cardsData = [
-    { id: 1, title: "Card 1" },
-    { id: 2, title: "Card 2" },
-    { id: 3, title: "Card 3" },
-    { id: 4, title: "Card 4" },
+    { id: 2, title: "Drowziness Detection", img: require("../assets/Tiredness.png") },
+    { id: 1, title: "Real-time traffic sign recognition", img: require("../assets/Carpool2.png") },
+    { id: 3, title: "Voice Assitance", img: require("../assets/voice.png") },
+    { id: 4, title: "Card 4", img: require("../assets/Carpool2.png") },
   ];
 
-  const openCamera = () => {
-    navigation.navigate('CameraScreen'); 
-  };
+  const renderCard = ({ item }) => <Card title={item.title} img={item.img} />;
 
-  const renderCard = ({ item }) => <Card title={item.title} />; 
+  const openCamera = () => {
+    navigation.navigate("Camera");
+  };
 
   return (
     <SafeAreaView style={styles.container}>

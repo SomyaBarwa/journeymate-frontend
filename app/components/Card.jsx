@@ -1,15 +1,15 @@
 import { View, Text, StyleSheet, Image } from "react-native";
 import React from "react";
 
-const Card = () => {
+const Card = ({title,img}) => {
   return (
     <View style={styles.cardContainer}>
       <Image
-        source={require("../assets/Carpool2.png")}
+        source={img}
         style={styles.getImage}
         resizeMode="contain"
       />
-      <Text style={styles.cardText}>Real-time traffic sign recognition</Text>
+      <Text style={styles.cardText}>{title}</Text>
     </View>
   );
 };

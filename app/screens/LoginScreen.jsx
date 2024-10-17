@@ -11,9 +11,11 @@ import React, { useState } from "react";
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
   const navigateToHome = () => {
-    console.log(email, password);
+    navigation.navigate("Home");
   };
+
   const navigateToRegister = () => {
     navigation.navigate("Register");
   };
@@ -42,9 +44,14 @@ export default function LoginScreen({ navigation }) {
       <TouchableOpacity style={styles.btnContainer} onPress={navigateToHome}>
         <Text style={styles.btnText}>Sign In</Text>
       </TouchableOpacity>
-      <Text>
-        Dont have an account? <Text onPress={navigateToRegister}>Sign Up</Text>
-      </Text>
+      <View style={styles.dont}>
+        <Text style={styles.dontText}>
+          Don't have an account?{" "}
+          <Text style={styles.dontLink} onPress={navigateToRegister}>
+            Sign Up
+          </Text>
+        </Text>
+      </View>
     </SafeAreaView>
   );
 }
@@ -57,7 +64,17 @@ const styles = StyleSheet.create({
   },
   inputView: {
     width: "100%",
-  },  
+  },
+  dont: {
+    width: "100%",
+    marginTop: 20,
+  },
+  dontLink: {
+    color: "#3B71F3",
+  },
+  dontText: {
+    fontSize: 20,
+  },
   input: {
     height: 40,
     width: "100%",
