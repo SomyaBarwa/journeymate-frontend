@@ -2,6 +2,7 @@
   "name": "journeymate",
   "version": "1.0.0",
   "main": "expo/AppEntry.js",
+  "newArchEnabled": true,
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
@@ -9,22 +10,23 @@
     "web": "expo start --web"
   },
   "dependencies": {
-    "@babel/preset-env": "^7.25.8",
-    "@babel/preset-react": "^7.25.7",
-    "@babel/runtime": "^7.25.7",
-    "@react-native-async-storage/async-storage": "^1.24.0",
-    "@react-navigation/native": "^6.1.18",
-    "@react-navigation/stack": "^6.4.1",
-    "expo": "~51.0.24",
-    "expo-camera": "~15.0.16",
-    "expo-status-bar": "~1.12.1",
-    "react": "18.2.0",
-    "react-native": "^0.74.3",
-    "react-native-gesture-handler": "~2.16.1",
-    "react-native-image-picker": "^7.1.2"
+    "@babel/preset-env": "^7.26.7",
+    "@babel/preset-react": "^7.26.3",
+    "@babel/runtime": "^7.26.7",
+    "@react-native-async-storage/async-storage": "1.23.1",
+    "@react-navigation/native": "^7.0.14",
+    "@react-navigation/stack": "^7.1.1",
+    "expo": "^52.0.28",
+    "expo-camera": "~16.0.14",
+    "expo-doctor": "^1.12.5",
+    "expo-status-bar": "~2.0.1",
+    "react": "18.3.1",
+    "react-native": "0.76.6",
+    "react-native-gesture-handler": "2.20.2",
+    "react-native-image-picker": "^8.0.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.25.8"
+    "@babel/core": "^7.26.7"
   },
   "private": true
 }

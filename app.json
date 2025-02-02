@@ -26,7 +26,8 @@
       "infoPlist": {
         "NSCameraUsageDescription": "This app needs access to your camera",
         "NSMicrophoneUsageDescription": "This app needs access to your microphone"
-      }
+      },
+      "newArchEnabled": true
     },
     "android": {
       "adaptiveIcon": {
@@ -36,7 +37,8 @@
       "permissions": [
         "CAMERA",
         "RECORD_AUDIO"
-      ]
+      ],
+      "newArchEnabled": true
     },
     "web": {
       "favicon": "./assets/favicon.png"
