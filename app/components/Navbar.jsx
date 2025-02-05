@@ -27,27 +27,29 @@ export default function Navbar() {
 
 const styles = StyleSheet.create({
   navbarContainer: {
-    height: 80,
+    height: 100,
     justifyContent: 'center',
-    paddingHorizontal: 20,
+    paddingHorizontal: 30,
     width: '100%',
   },
   navContent: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    paddingHorizontal: 30,
+
   },
   navbarTitle: {
-    fontSize: 25,
+    fontSize: 30,
     fontWeight: 'bold',
   },
   navbarTitle2: {
-    fontSize: 18,
+    fontSize: 25,
   },
   iconPlaceholder: {
-    padding: 10,
+    padding: 0,
   },
   iconText: {
-    fontSize: 20,
+    fontSize: 40,
   },
 });

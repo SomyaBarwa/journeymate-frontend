@@ -15,9 +15,16 @@
       [
         "expo-camera",
         {
-          "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera",
-          "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone",
+          "cameraPermission": "Allow journeymate to access your camera",
+          "microphonePermission": "Allow journeymate to access your microphone",
           "recordAudioAndroid": true
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Allow journeymate to access your location",
+          "locationAlwaysAndWhenInUsePermission": "Allow journeymate to access your location at all times"
         }
       ]
     ],
@@ -25,23 +32,28 @@
       "supportsTablet": true,
       "infoPlist": {
         "NSCameraUsageDescription": "This app needs access to your camera",
-        "NSMicrophoneUsageDescription": "This app needs access to your microphone"
+        "NSMicrophoneUsageDescription": "This app needs access to your microphone",
+        "NSLocationWhenInUseUsageDescription": "This app needs access to your location",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "This app needs access to your location at all times"
       },
       "newArchEnabled": true
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./app/assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
       "permissions": [
-        "CAMERA",
-        "RECORD_AUDIO"
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.ACCESS_COARSE_LOCATION"
       ],
-      "newArchEnabled": true
+      "newArchEnabled": true,
+      "package": "com.anonymous.journeymate"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./app/assets/favicon.png"
     }
   }
 }

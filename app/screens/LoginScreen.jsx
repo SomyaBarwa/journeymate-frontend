@@ -87,6 +87,11 @@ const styles = StyleSheet.create({
     height: 100,
     width: "100%",
     marginTop: 50,
+    // backgroundColor: "aliceblue",
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 30,
+    borderRadius: 10,
   },
   header: {
     color: "#2e2e2e",
