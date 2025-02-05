@@ -50,7 +50,7 @@ export default function CameraScreen() {
         type: "video/mp4",
       });
 
-      const response = await fetch("http://your-backend-url/videos", {
+      const response = await fetch("somya idhar url write kar for backend", {
         method: "POST",
         body: formData,
       });
