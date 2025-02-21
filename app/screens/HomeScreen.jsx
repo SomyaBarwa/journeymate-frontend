@@ -1,31 +1,48 @@
+import React from "react";
 import {
   View,
-  Text,
   SafeAreaView,
   StyleSheet,
+  FlatList,
   TouchableOpacity,
-  ScrollView,
+  Text,
 } from "react-native";
-import React from "react";
 import Navbar from "../components/Navbar";
 import Card from "../components/Card";
 
-export default function HomeScreen() {
+export default function HomeScreen({ navigation }) {
+  const cardsData = [
+    { id: 2, title: "Drowziness Detection", img: require("../assets/Tiredness.png") },
+    { id: 1, title: "Real-time traffic sign recognition", img: require("../assets/Carpool2.png") },
+    { id: 3, title: "Voice Assitance", img: require("../assets/voice.png") },
+    { id: 4, title: "Card 4", img: require("../assets/Carpool2.png") },
+  ];
+
+  const renderCard = ({ item }) => <Card title={item.title} img={item.img} />;
+
+  const openCamera = () => {
+    navigation.navigate("Camera");
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <Navbar />
-
       <View style={styles.mainContent}>
-        <ScrollView
-          contentContainerStyle={styles.cardView}
-          showsVerticalScrollIndicator={false}
-        >
-          <Card />
-          <Card />
-          {/* <Card />  */}
-        </ScrollView>
+        <FlatList
+          data={cardsData}
+          renderItem={renderCard}
+          keyExtractor={(item) => item.id.toString()}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.carousel}
+          snapToAlignment="center"
+          decelerationRate="fast"
+          snapToInterval={200} // Adjust based on card width + margin
+          pagingEnabled
+        />
+
         <View style={styles.footerContainer}>
-          <TouchableOpacity style={styles.btnContainer}>
+          <TouchableOpacity style={styles.btnContainer} onPress={openCamera}>
             <Text style={styles.btnText}>Start your ride</Text>
           </TouchableOpacity>
         </View>
@@ -39,7 +56,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "flex-start",
-    flexDirection: "column",
   },
   btnContainer: {
     padding: 15,
@@ -54,30 +70,15 @@ const styles = StyleSheet.create({
   },
   mainContent: {
     marginTop: 0,
-    borderTopLeftRadius: 40,
-    borderTopRightRadius: 40,
     width: "100%",
     display: "flex",
     alignItems: "center",
     padding: 10,
-    rowGap: 40,
     backgroundColor: "#f9f9f9",
     height: "100%",
-    color: "black",
-    borderRadius: 40,
   },
-  cardView: {
-    display: "flex",
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-between",
-    width: "100%",
-    padding: 10,
-    marginTop: 40,
-    height: "auto",
-    overflow: "hidden",
-    rowGap: 40,
-    borderRadius: 40,
+  carousel: {
+    paddingVertical: 10,
   },
   footerContainer: {
     position: "absolute",

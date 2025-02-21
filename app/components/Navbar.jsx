@@ -1,16 +1,23 @@
 import React from 'react';
 import { SafeAreaView, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
-export default function Navbar({navigation}) {
+export default function Navbar() {
+  const navigation = useNavigation(); // Access navigation directly
+
+  const navigateToProfile = () => {
+    navigation.navigate('Profile');
+  };
+
   return (
     <SafeAreaView style={styles.navbarContainer}>
       <View style={styles.navContent}>
         <View>
-        <Text style={styles.navbarTitle}>JOURNEYMATE</Text>
-        <Text style={styles.navbarTitle2}>Hi! There</Text>
+          <Text style={styles.navbarTitle}>JOURNEYMATE</Text>
+          <Text style={styles.navbarTitle2}>Hi! There</Text>
         </View>
 
-        <TouchableOpacity style={styles.iconPlaceholder}>
+        <TouchableOpacity style={styles.iconPlaceholder} onPress={navigateToProfile}>
           <Text style={styles.iconText}>👤</Text>
         </TouchableOpacity>
       </View>
@@ -20,27 +27,31 @@ export default function Navbar({navigation}) {
 
 const styles = StyleSheet.create({
   navbarContainer: {
-    height: 80,
+    // height: 110,
     justifyContent: 'center',
-    paddingHorizontal: 20,
-    width: '100%',  
+    // padding:40,
+    paddingHorizontal: 30,
+    marginTop:25,
+    width: '100%',
   },
   navContent: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    paddingHorizontal: 30,
+
   },
   navbarTitle: {
-    fontSize: 25,
+    fontSize: 30,
     fontWeight: 'bold',
   },
   navbarTitle2: {
-    fontSize: 18,
+    fontSize: 25,
   },
   iconPlaceholder: {
-    padding: 10,
+    padding: 0,
   },
   iconText: {
-    fontSize: 20,
+    fontSize: 40,
   },
 });
