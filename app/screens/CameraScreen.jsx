@@ -1,81 +1,104 @@
 import React, { useRef, useState, useEffect } from "react";
-import { Button, StyleSheet, View, Text } from "react-native";
-import { CameraView, useCameraPermissions } from "expo-camera";
-import * as Location from "expo-location";
+import { Button, StyleSheet, View, Text, Alert } from "react-native";
+import { CameraView, useCameraPermissions, useMicrophonePermissions } from "expo-camera";
 import LocationComp from "../components/LocationComp";
 
 export default function CameraScreen() {
   const cameraRef = useRef(null);
-  const [permission, requestPermission] = useCameraPermissions();
-  const [isRecording, setIsRecording] = useState(false);
+  const [cameraPermission, requestCameraPermission] = useCameraPermissions();
+  const [micPermission, requestMicPermission] = useMicrophonePermissions();
+  const [isCapturing, setIsCapturing] = useState(false);
+  const [captureInterval, setCaptureInterval] = useState(null);
   const [cameraError, setCameraError] = useState(null);
 
-  const handleCameraReady = () => {
-    setCameraError(null); // Reset any previous errors when the camera is ready
+  useEffect(() => {
+    requestPermissions();
+  }, []);
+
+  // Request Camera & Microphone Permissions
+  const requestPermissions = async () => {
+    if (!cameraPermission || cameraPermission.status !== "granted") {
+      await requestCameraPermission();
+    }
+    if (!micPermission || micPermission.status !== "granted") {
+      await requestMicPermission();
+    }
   };
 
-  const handleCameraError = (error) => {
-    setCameraError(error.message); // Update the error state if camera fails
-    console.error("Camera Error: ", error.message);
-  };
-
-  const startRecording = async () => {
+  // Function to capture a photo and send it to backend
+  const capturePhoto = async () => {
     if (cameraRef.current) {
       try {
-        console.log("started");
-        const video = await cameraRef.current.recordAsync();
-        console.log("Video URI:", video.uri);
-        await sendVideoToBackend(video.uri);
+        const photo = await cameraRef.current.takePictureAsync({ base64: true });
+        console.log("Captured Photo URI:", photo.uri);
+
+        // Send photo to backend
+        await sendPhotoToBackend(photo.uri);
       } catch (error) {
-        console.error("Error starting recording:", error);
+        console.error("Error capturing photo:", error);
         setCameraError(error.message);
       }
     }
   };
 
-  const stopRecording = () => {
-    if (cameraRef.current) {
-      console.log("stopped");
-      cameraRef.current.stopRecording();
-      setIsRecording(false);
-    }
-  };
-
-  const sendVideoToBackend = async (uri) => {
+  // Function to send photo to backend
+  const sendPhotoToBackend = async (uri) => {
     try {
       const formData = new FormData();
-      formData.append("video", {
+      formData.append("photo", {
         uri,
-        name: "video.mp4",
-        type: "video/mp4",
+        name: "image.jpg",
+        type: "image/jpeg",
       });
 
-      const response = await fetch("somya idhar url write kar for backend", {
+      const response = await fetch("YOUR_BACKEND_API_URL_HERE", {
         method: "POST",
         body: formData,
       });
 
       if (!response.ok) {
-        throw new Error("Failed to upload video");
+        throw new Error("Failed to upload photo");
       }
 
-      console.log("Video uploaded successfully");
+      console.log("Photo uploaded successfully");
     } catch (error) {
-      console.error("Error sending video:", error);
+      console.error("Error sending photo:", error);
     }
   };
 
-  if (!permission) {
+  // Start capturing photos every 2 seconds
+  const startCapturing = () => {
+    if (!cameraPermission || cameraPermission.status !== "granted") {
+      Alert.alert("Permission Required", "Camera permission is required.");
+      return;
+    }
+
+    setIsCapturing(true);
+    const interval = setInterval(() => {
+      capturePhoto();
+    }, 2000);
+
+    setCaptureInterval(interval);
+  };
+
+  // Stop capturing photos
+  const stopCapturing = () => {
+    setIsCapturing(false);
+    if (captureInterval) {
+      clearInterval(captureInterval);
+      setCaptureInterval(null);
+    }
+  };
+
+  if (!cameraPermission || !micPermission) {
     return <View />;
   }
 
-  if (permission.status !== "granted") {
+  if (cameraPermission.status !== "granted" || micPermission.status !== "granted") {
     return (
       <View style={styles.container}>
-        <Text style={styles.message}>
-          We need your permission to show the camera
-        </Text>
-        <Button onPress={requestPermission} title="Grant Permission" />
+        <Text style={styles.message}>We need permissions to use the camera</Text>
+        <Button onPress={requestPermissions} title="Grant Permissions" />
       </View>
     );
   }
@@ -86,23 +109,20 @@ export default function CameraScreen() {
         ref={cameraRef}
         style={styles.camera}
         type={"back"}
-        mode="video"
-        onCameraReady={handleCameraReady}
-        onError={handleCameraError}
       />
 
-        <LocationComp />
+      <LocationComp />
 
-      {/* <Location/> */}
-      <View style={styles.buttonContainer}>
+      {/* Bottom White Section */}
+      <View style={styles.bottomSection}>
         <Button
-          title={isRecording ? "Stop Recording" : "Start Recording"}
-          onPress={isRecording ? stopRecording : startRecording}
+          title={isCapturing ? "Stop Capturing" : "Start Capturing"}
+          onPress={isCapturing ? stopCapturing : startCapturing}
+          color="#3B71F3"
         />
       </View>
-      {cameraError && (
-        <Text style={styles.errorText}>Error: {cameraError}</Text>
-      )}
+
+      {cameraError && <Text style={styles.errorText}>Error: {cameraError}</Text>}
     </View>
   );
 }
@@ -114,29 +134,27 @@ const styles = StyleSheet.create({
   camera: {
     flex: 1,
   },
-  buttonContainer: {
+  bottomSection: {
     position: "absolute",
-    bottom: 60,
-    fontSize: 20,
+    bottom: 0,
     width: "100%",
+    height: 100,
+    backgroundColor: "white",
     alignItems: "center",
-    backgroundColor: "transparent",
-    flexDirection: "row",
-    justifyContent: "space-around",
+    justifyContent: "center",
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: -3 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 5,
   },
   errorText: {
     color: "red",
     position: "absolute",
-    bottom: 70,
+    bottom: 120,
     left: 20,
     fontWeight: "bold",
-  },
-  speedText: {
-    position: "absolute",
-    top: 20,
-    right: 20,
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "white",
   },
 });
