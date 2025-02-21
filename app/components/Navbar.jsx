@@ -27,9 +27,11 @@ export default function Navbar() {
 
 const styles = StyleSheet.create({
   navbarContainer: {
-    height: 100,
+    // height: 110,
     justifyContent: 'center',
+    // padding:40,
     paddingHorizontal: 30,
+    marginTop:25,
     width: '100%',
   },
   navContent: {
