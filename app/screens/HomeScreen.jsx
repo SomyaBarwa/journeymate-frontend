@@ -10,11 +10,18 @@ import {
 import Navbar from "../components/Navbar";
 import Card from "../components/Card";
 
-
 export default function HomeScreen({ navigation }) {
   const cardsData = [
-    { id: 2, title: "Drowziness Detection", img: require("../assets/Tiredness.png") },
-    { id: 1, title: "Real-time traffic sign recognition", img: require("../assets/Carpool2.png") },
+    {
+      id: 2,
+      title: "Drowziness Detection",
+      img: require("../assets/Tiredness.png"),
+    },
+    {
+      id: 1,
+      title: "Real-time traffic sign recognition",
+      img: require("../assets/Carpool2.png"),
+    },
     { id: 3, title: "Voice Assitance", img: require("../assets/voice.png") },
     { id: 4, title: "Card 4", img: require("../assets/Carpool2.png") },
   ];
@@ -22,13 +29,17 @@ export default function HomeScreen({ navigation }) {
   const renderCard = ({ item }) => <Card title={item.title} img={item.img} />;
 
   const openCamera = () => {
+    navigation.navigate("Camera");
+  };
+  const openMap = () => {
     navigation.navigate("Map");
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <Navbar />
-      <View style={styles.mainContent}>
+      <SafeAreaView style={styles.mainContent}>
+        <Text style={styles.textHead}>Features:</Text>
         <FlatList
           data={cardsData}
           renderItem={renderCard}
@@ -41,11 +52,14 @@ export default function HomeScreen({ navigation }) {
           snapToInterval={200} // Adjust based on card width + margin
           pagingEnabled
         />
-        <View style={styles.footerContainer}>
-          <TouchableOpacity style={styles.btnContainer} onPress={openCamera}>
-            <Text style={styles.btnText}>Start your ride</Text>
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity onPress={openMap}>
+          <Card title={"Maps"} img={require("../assets/Carpool2.png")}/>
+        </TouchableOpacity>
+      </SafeAreaView>
+      <View style={styles.footerContainer}>
+        <TouchableOpacity style={styles.btnContainer} onPress={openCamera}>
+          <Text style={styles.btnText}>Start your ride</Text>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
@@ -56,6 +70,14 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "flex-start",
+    
+  },
+  textHead:{
+    fontSize: 40,
+    padding: 10,
+    marginLeft: 15,
+    width:"100%",
+    fontWeight: "400"
   },
   btnContainer: {
     padding: 15,
@@ -75,10 +97,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 10,
     backgroundColor: "#f9f9f9",
-    height: "100%",
   },
   carousel: {
     paddingVertical: 10,
+    marginBottom: 20,
   },
   footerContainer: {
     position: "absolute",
@@ -86,6 +108,6 @@ const styles = StyleSheet.create({
     width: "100%",
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: 100,
+    marginBottom: 50,
   },
 });
