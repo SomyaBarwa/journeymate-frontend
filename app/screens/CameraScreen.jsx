@@ -1,7 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
-import { Button, StyleSheet, View, Text } from "react-native";
-import { CameraView, useCameraPermissions } from "expo-camera";
-import * as Location from "expo-location";
+import { Button, StyleSheet, View, Text, Alert } from "react-native";
+import { CameraView, useCameraPermissions, useMicrophonePermissions } from "expo-camera";
 import LocationComp from "../components/LocationComp";
 import * as FileSystem from "expo-file-system";
 import axios from "axios";
@@ -14,16 +13,22 @@ export default function CameraScreen() {
   const [captureInterval, setCaptureInterval] = useState(null);
   const [cameraError, setCameraError] = useState(null);
 
-  const handleCameraReady = () => {
-    setCameraError(null); // Reset any previous errors when the camera is ready
+  useEffect(() => {
+    requestPermissions();
+  }, []);
+
+  // Request Camera & Microphone Permissions
+  const requestPermissions = async () => {
+    if (!cameraPermission || cameraPermission.status !== "granted") {
+      await requestCameraPermission();
+    }
+    if (!micPermission || micPermission.status !== "granted") {
+      await requestMicPermission();
+    }
   };
 
-  const handleCameraError = (error) => {
-    setCameraError(error.message); // Update the error state if camera fails
-    console.error("Camera Error: ", error.message);
-  };
-
-  const startRecording = async () => {
+  // Function to capture a photo and send it to backend
+  const capturePhoto = async () => {
     if (cameraRef.current) {
       try {
         const photo = await cameraRef.current.takePictureAsync({ base64: true });
