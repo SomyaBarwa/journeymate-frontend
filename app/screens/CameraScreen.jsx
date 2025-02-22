@@ -2,6 +2,8 @@ import React, { useRef, useState, useEffect } from "react";
 import { Button, StyleSheet, View, Text, Alert } from "react-native";
 import { CameraView, useCameraPermissions, useMicrophonePermissions } from "expo-camera";
 import LocationComp from "../components/LocationComp";
+import * as FileSystem from "expo-file-system";
+import axios from "axios";
 
 export default function CameraScreen() {
   const cameraRef = useRef(null);
@@ -33,7 +35,7 @@ export default function CameraScreen() {
         console.log("Captured Photo URI:", photo.uri);
 
         // Send photo to backend
-        await sendPhotoToBackend(photo.uri);
+        const res=await sendPhotoToBackend(photo.uri);
       } catch (error) {
         console.error("Error capturing photo:", error);
         setCameraError(error.message);
@@ -41,28 +43,39 @@ export default function CameraScreen() {
     }
   };
 
-  // Function to send photo to backend
+
   const sendPhotoToBackend = async (uri) => {
     try {
+      const fileInfo = await FileSystem.getInfoAsync(uri);
+      console.log('1----', fileInfo);
+      if (!fileInfo.exists) {
+        console.error("File does not exist:", uri);
+        return;
+      }
+      
       const formData = new FormData();
-      formData.append("photo", {
-        uri,
-        name: "image.jpg",
+      formData.append("frame", {
+        uri: uri,
+        name: `image_${Date.now()}.jpg`,
         type: "image/jpeg",
       });
-
-      const response = await fetch("YOUR_BACKEND_API_URL_HERE", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to upload photo");
-      }
-
+      console.log('3----', formData);
+      
+      // Correct axios usage
+      const response = await axios.post(
+        "http://IPCONFIG_IP:5000/api_path",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      console.log('4-----', response.data);
+      
       console.log("Photo uploaded successfully");
     } catch (error) {
-      console.error("Error sending photo:", error);
+      console.error("Error sending photo:", error.message);
     }
   };
 
