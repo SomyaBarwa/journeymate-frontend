@@ -21,12 +21,12 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 100,
     right: 10,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'white',
     padding: 10,
     borderRadius: 8,
   },
   speedText: {
-    color: 'white',
+    color: '#3B71F3',
     fontSize: 30,
   },
   errorText: {
