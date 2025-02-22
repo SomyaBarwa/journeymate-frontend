@@ -10,6 +10,7 @@ import {
 import Navbar from "../components/Navbar";
 import Card from "../components/Card";
 
+
 export default function HomeScreen({ navigation }) {
   const cardsData = [
     { id: 2, title: "Drowziness Detection", img: require("../assets/Tiredness.png") },
@@ -21,7 +22,7 @@ export default function HomeScreen({ navigation }) {
   const renderCard = ({ item }) => <Card title={item.title} img={item.img} />;
 
   const openCamera = () => {
-    navigation.navigate("Camera");
+    navigation.navigate("Map");
   };
 
   return (
@@ -40,7 +41,6 @@ export default function HomeScreen({ navigation }) {
           snapToInterval={200} // Adjust based on card width + margin
           pagingEnabled
         />
-
         <View style={styles.footerContainer}>
           <TouchableOpacity style={styles.btnContainer} onPress={openCamera}>
             <Text style={styles.btnText}>Start your ride</Text>

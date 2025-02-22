@@ -1,7 +1,6 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState } from "react";
 import { Button, StyleSheet, View, Text } from "react-native";
 import { CameraView, useCameraPermissions } from "expo-camera";
-import * as Location from "expo-location";
 import LocationComp from "../components/LocationComp";
 
 export default function CameraScreen() {
@@ -11,11 +10,11 @@ export default function CameraScreen() {
   const [cameraError, setCameraError] = useState(null);
 
   const handleCameraReady = () => {
-    setCameraError(null); // Reset any previous errors when the camera is ready
+    setCameraError(null);
   };
 
   const handleCameraError = (error) => {
-    setCameraError(error.message); // Update the error state if camera fails
+    setCameraError(error.message);
     console.error("Camera Error: ", error.message);
   };
 
@@ -91,7 +90,7 @@ export default function CameraScreen() {
         onError={handleCameraError}
       />
 
-        <LocationComp />
+      <LocationComp />
 
       {/* <Location/> */}
       <View style={styles.buttonContainer}>
