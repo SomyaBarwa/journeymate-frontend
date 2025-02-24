@@ -15,8 +15,8 @@
     "@react-native-async-storage/async-storage": "1.23.1",
     "@react-navigation/native": "^7.0.14",
     "@react-navigation/stack": "^7.1.1",
-    "axios": "^1.7.9",
     "@rnmapbox/maps": "^10.1.36",
+    "axios": "^1.7.9",
     "expo": "^52.0.36",
     "expo-av": "~15.0.2",
     "expo-camera": "^16.0.17",
@@ -26,6 +26,7 @@
     "expo-video": "^2.0.5",
     "react": "18.3.1",
     "react-native": "0.76.7",
+    "react-native-chart-kit": "^6.12.0",
     "react-native-gesture-handler": "2.20.2",
     "react-native-google-places-autocomplete": "^2.5.7",
     "react-native-image-picker": "^8.0.0",
@@ -33,6 +34,7 @@
     "react-native-maps-directions": "^1.9.0",
     "react-native-permissions": "^5.2.5",
     "react-native-safe-area-context": "^5.2.0",
+    "react-native-svg": "15.8.0",
     "socket.io-client": "^4.8.1"
   },
   "devDependencies": {

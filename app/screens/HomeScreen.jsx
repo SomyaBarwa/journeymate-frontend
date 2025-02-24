@@ -36,12 +36,11 @@ export default function HomeScreen({ navigation }) {
     },
   ];
 
-  const renderCard = ({ item }) => <Card title={item.title} img={item.img} link={item.link} navigation={navigation}/>;
-
   const openCamera = () => {
-    navigation.navigate("FrontCamera");
+    navigation.navigate("Graph");
   };
 
+  const renderCard = ({ item }) => <Card title={item.title} img={item.img} link={item.link} navigation={navigation}/>;
 
   return (
     <SafeAreaView style={styles.container}>
