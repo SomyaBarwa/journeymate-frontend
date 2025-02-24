@@ -11,6 +11,7 @@ import CameraScreen from "./app/screens/CameraScreen"
 import ProfileScreen from './app/screens/ProfileScreen';
 import MapScreen from './app/screens/MapScreen';
 import { LocationProvider } from './app/context/LocationContext';
+import FrontCameraScreen from './app/screens/FrontCameraScreen';
 
 const Stack = createStackNavigator();
 
@@ -23,6 +24,7 @@ export default function App() {
           <Stack.Screen name="Welcome" component={WelcomeScreen} />
           <Stack.Screen name="Register" component={RegisterScreen} />
           <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen name="Frontcamera" component={FrontCameraScreen} />
           <Stack.Screen name="Camera" component={CameraScreen} />
           <Stack.Screen name="Home" component={HomeScreen} />
           <Stack.Screen name="Profile" component={ProfileScreen} />
@@ -30,8 +32,6 @@ export default function App() {
         </Stack.Navigator>
       </NavigationContainer>
     </LocationProvider>
-
-
   );
 }
 

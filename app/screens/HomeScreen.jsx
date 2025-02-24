@@ -16,24 +16,32 @@ export default function HomeScreen({ navigation }) {
       id: 2,
       title: "Drowziness Detection",
       img: require("../assets/Tiredness.png"),
+      link: "Frontcamera",
     },
     {
       id: 1,
       title: "Real-time traffic sign recognition",
       img: require("../assets/Carpool2.png"),
+      link: "Camera",
     },
-    { id: 3, title: "Voice Assitance", img: require("../assets/voice.png") },
-    { id: 4, title: "Card 4", img: require("../assets/Carpool2.png") },
+    { id: 3, 
+      title: "Maps", 
+      img: require("../assets/Carpool2.png"),
+      link: "Map" 
+    },
+    { id: 4, 
+      title: "Voice Assitance", 
+      img: require("../assets/voice.png"),
+      link: "" 
+    },
   ];
 
-  const renderCard = ({ item }) => <Card title={item.title} img={item.img} />;
+  const renderCard = ({ item }) => <Card title={item.title} img={item.img} link={item.link} navigation={navigation}/>;
 
   const openCamera = () => {
-    navigation.navigate("Camera");
+    navigation.navigate("FrontCamera");
   };
-  const openMap = () => {
-    navigation.navigate("Map");
-  };
+
 
   return (
     <SafeAreaView style={styles.container}>
@@ -52,9 +60,6 @@ export default function HomeScreen({ navigation }) {
           snapToInterval={200} // Adjust based on card width + margin
           pagingEnabled
         />
-        <TouchableOpacity onPress={openMap}>
-          <Card title={"Maps"} img={require("../assets/Carpool2.png")}/>
-        </TouchableOpacity>
       </SafeAreaView>
       <View style={styles.footerContainer}>
         <TouchableOpacity style={styles.btnContainer} onPress={openCamera}>
@@ -70,14 +75,13 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "flex-start",
-    
   },
-  textHead:{
+  textHead: {
     fontSize: 40,
     padding: 10,
     marginLeft: 15,
-    width:"100%",
-    fontWeight: "400"
+    width: "100%",
+    fontWeight: "400",
   },
   btnContainer: {
     padding: 15,

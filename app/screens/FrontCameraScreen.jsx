@@ -1,11 +1,11 @@
 import React, { useRef, useState, useEffect } from "react";
-import { Button, StyleSheet, View, Text, Alert} from "react-native";
+import { Button, StyleSheet, View, Text, Alert } from "react-native";
 import { CameraView, useCameraPermissions, useMicrophonePermissions } from "expo-camera";
 import LocationComp from "../components/LocationComp";
 import * as FileSystem from "expo-file-system";
 import axios from "axios";
 
-export default function CameraScreen() {
+export default function FrontCameraScreen() {
   const cameraRef = useRef(null);
   const [cameraPermission, requestCameraPermission] = useCameraPermissions();
   const [micPermission, requestMicPermission] = useMicrophonePermissions();
@@ -121,7 +121,7 @@ export default function CameraScreen() {
       <CameraView
         ref={cameraRef}
         style={styles.camera}
-        facing={"back"}
+        facing={"front"}
       />
 
       <LocationComp />
@@ -134,7 +134,7 @@ export default function CameraScreen() {
           color="#3B71F3"
         />
       </View>
-      
+
       {cameraError && <Text style={styles.errorText}>Error: {cameraError}</Text>}
     </View>
   );
