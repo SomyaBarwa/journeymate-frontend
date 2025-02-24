@@ -1,5 +1,5 @@
 import React from "react";
-import { ScrollView, View, Text, StyleSheet } from "react-native";
+import { ScrollView, Text, StyleSheet } from "react-native";
 import Graph from "../components/Graph";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Navbar from "../components/Navbar";
@@ -54,8 +54,10 @@ const styles = StyleSheet.create({
     marginTop: 0,
     width: "100%",
     display: "flex",
-    padding: 20,
+    padding: 10,
     backgroundColor: "#f9f9f9",
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
   },
   header: {
     fontSize: 24,

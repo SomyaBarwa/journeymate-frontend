@@ -6,11 +6,14 @@ import {
   Text,
   SafeAreaView,
 } from "react-native";
-import MapView, { Marker, Polyline } from "react-native-maps";
+import MapView, { Marker } from "react-native-maps";
 import MapViewDirections from "react-native-maps-directions";
 import { LocationContext } from "../context/LocationContext";
+import { useNavigation } from "@react-navigation/native";
 
-const MapScreen = ({ navigation }) => {
+const MapScreen = () => {
+  const navigation = useNavigation();
+
   const { currentLocation } = useContext(LocationContext);
   const [destination, setDestination] = useState(null);
 

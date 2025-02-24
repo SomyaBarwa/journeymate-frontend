@@ -6,11 +6,15 @@ import {
   FlatList,
   TouchableOpacity,
   Text,
+  ScrollView,
 } from "react-native";
 import Navbar from "../components/Navbar";
 import Card from "../components/Card";
+import { useNavigation } from "@react-navigation/native";
 
-export default function HomeScreen({ navigation }) {
+export default function HomeScreen() {
+  const navigation = useNavigation();
+
   const cardsData = [
     {
       id: 2,
@@ -24,15 +28,17 @@ export default function HomeScreen({ navigation }) {
       img: require("../assets/Carpool2.png"),
       link: "Camera",
     },
-    { id: 3, 
-      title: "Maps", 
+    {
+      id: 3,
+      title: "Maps",
       img: require("../assets/Carpool2.png"),
-      link: "Map" 
+      link: "Map",
     },
-    { id: 4, 
-      title: "Voice Assitance", 
+    {
+      id: 4,
+      title: "Voice Assitance",
       img: require("../assets/voice.png"),
-      link: "" 
+      link: "",
     },
   ];
 
@@ -40,12 +46,18 @@ export default function HomeScreen({ navigation }) {
     navigation.navigate("Graph");
   };
 
-  const renderCard = ({ item }) => <Card title={item.title} img={item.img} link={item.link} navigation={navigation}/>;
+  const renderCard = ({ item }) => (
+    <Card
+      title={item.title}
+      img={item.img}
+      link={item.link}
+    />
+  );
 
   return (
     <SafeAreaView style={styles.container}>
       <Navbar />
-      <SafeAreaView style={styles.mainContent}>
+      <ScrollView style={styles.mainContent}>
         <Text style={styles.textHead}>Features:</Text>
         <FlatList
           data={cardsData}
@@ -56,10 +68,10 @@ export default function HomeScreen({ navigation }) {
           contentContainerStyle={styles.carousel}
           snapToAlignment="center"
           decelerationRate="fast"
-          snapToInterval={200} // Adjust based on card width + margin
+          snapToInterval={200}
           pagingEnabled
         />
-      </SafeAreaView>
+      </ScrollView>
       <View style={styles.footerContainer}>
         <TouchableOpacity style={styles.btnContainer} onPress={openCamera}>
           <Text style={styles.btnText}>Start your ride</Text>
@@ -97,9 +109,10 @@ const styles = StyleSheet.create({
     marginTop: 0,
     width: "100%",
     display: "flex",
-    alignItems: "center",
     padding: 10,
     backgroundColor: "#f9f9f9",
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
   },
   carousel: {
     paddingVertical: 10,

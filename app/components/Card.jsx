@@ -1,7 +1,10 @@
-import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
+import { Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import React from "react";
+import { useNavigation } from "@react-navigation/native";
 
-const Card = ({ title, img, link, navigation }) => {
+const Card = ({ title, img, link}) => {
+    const navigation = useNavigation(); 
+  
   const navigateTo = () => {
     if (link) {
       navigation.navigate(link.toString());
