@@ -43,7 +43,7 @@ export default function HomeScreen() {
   ];
 
   const openCamera = () => {
-    navigation.navigate("Graph");
+    navigation.navigate("Camera");
   };
 
   const renderCard = ({ item }) => (
