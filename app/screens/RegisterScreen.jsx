@@ -5,6 +5,7 @@ import {
   StyleSheet,
   TextInput,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import React, { useState } from "react";
 
@@ -12,50 +13,69 @@ export default function RegisterScreen({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
-  const navigateToHome = () => {
-    navigation.navigate("Home");
+  
+
+  const handleRegister = async () => {
+    if (!username || !email || !password) {
+      Alert.alert("Error", "All fields are required");
+      return;
+    }
+
+    try {
+      const response = await fetch("http://192.168.1.9:5000/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, email, password }),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        Alert.alert("Success", "User registered successfully!");
+        navigation.navigate("Login"); // Redirect to login after successful registration
+      } else {
+        Alert.alert("Error", data.message || "Registration failed");
+      }
+    } catch (error) {
+      console.error("Registration Error:", error);
+      Alert.alert("Error", "Something went wrong. Please try again.");
+    }
   };
-  const navigateToLogin = () => {
-    navigation.navigate("Login");
-  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>
         <Text style={styles.header}>Sign Up</Text>
       </View>
-      {/* <View> */}
       <Text style={styles.placeholderText}>Username</Text>
       <TextInput
         style={styles.input}
         placeholder="Batman"
         value={username}
-        onChangeText={(text) => setUsername(text)}
-        required
+        onChangeText={setUsername}
       />
       <Text style={styles.placeholderText}>Email address</Text>
       <TextInput
         style={styles.input}
-        placeholder="jogndoe@gmail.com"
+        placeholder="johndoe@gmail.com"
         value={email}
-        onChangeText={(text) => setEmail(text)}
-        required
+        onChangeText={setEmail}
+        keyboardType="email-address"
       />
       <Text style={styles.placeholderText}>Password</Text>
       <TextInput
         secureTextEntry
         style={styles.input}
-        placeholder="enter password"
+        placeholder="Enter password"
         value={password}
-        onChangeText={(text) => setPassword(text)}
-        required
+        onChangeText={setPassword}
       />
-      <TouchableOpacity style={styles.btnContainer} onPress={navigateToHome}>
+      <TouchableOpacity style={styles.btnContainer} onPress={handleRegister}>
         <Text style={styles.btnText}>Sign Up</Text>
       </TouchableOpacity>
       <View style={styles.dont}>
         <Text style={styles.dontText}>
-          Have an account?
-          <Text style={styles.dontLink} onPress={navigateToLogin}>
+          Have an account?{" "}
+          <Text style={styles.dontLink} onPress={() => navigation.navigate("Login")}>
             Sign In
           </Text>
         </Text>
@@ -65,63 +85,14 @@ export default function RegisterScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    marginHorizontal: 20,
-    alignItems: "left",
-  },
-  inputView: {
-    width: "100%",
-  },
-  input: {
-    height: 40,
-    width: "100%",
-    marginVertical: 20,
-    borderWidth: 1,
-    padding: 10,
-    fontSize: 20,
-  },
-  dont: {
-    width: "100%",
-    marginTop: 20,
-  },
-  dontLink: {
-    color: "#3B71F3",
-  },
-  dontText: {
-    fontSize: 20,
-  },
-  headerContainer: {
-    height: 100,
-    width: "100%",
-    marginTop: 50,
-    // backgroundColor: "aliceblue",
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: 30,
-    borderRadius: 10,
-  },
-  header: {
-    color: "#2e2e2e",
-    textAlign: "center",
-    fontSize: 50,
-    fontWeight: "bold",
-  },
-  btnContainer: {
-    padding: 15,
-    backgroundColor: "#3B71F3",
-    borderRadius: 15,
-    marginTop: 30,
-    width: "100%",
-    // marginBottom: 10,
-  },
-  btnText: {
-    color: "#fff",
-    textAlign: "center",
-    fontSize: 25,
-  },
-  placeholderText: {
-    fontSize: 25,
-    fontWeight: "300",
-  },
+  container: { flex: 1, marginHorizontal: 20 },
+  input: { height: 40, width: "100%", marginVertical: 10, borderWidth: 1, padding: 10 },
+  dont: { width: "100%", marginTop: 20 },
+  dontLink: { color: "#3B71F3" },
+  dontText: { fontSize: 20 },
+  headerContainer: { marginTop: 50, alignItems: "center", marginBottom: 30 },
+  header: { fontSize: 50, fontWeight: "bold" },
+  btnContainer: { padding: 15, backgroundColor: "#3B71F3", borderRadius: 15, marginTop: 20 },
+  btnText: { color: "#fff", textAlign: "center", fontSize: 20 },
+  placeholderText: { fontSize: 20, fontWeight: "300" },
 });

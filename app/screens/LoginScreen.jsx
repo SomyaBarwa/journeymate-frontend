@@ -5,6 +5,7 @@ import {
   StyleSheet,
   TextInput,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import React, { useState } from "react";
 
@@ -12,13 +13,39 @@ export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const navigateToHome = () => {
-    navigation.navigate("Home");
+  const handleLogin = async () => {
+    if (!email || !password) {
+      Alert.alert("Error", "Please enter both email and password");
+      return;
+    }
+
+    try {
+      const response = await fetch("http://192.168.1.9:5000/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        Alert.alert("Success", "Login successful!");
+        navigation.navigate("Home"); // Navigate to Home on success
+      } else {
+        Alert.alert("Error", data.message || "Invalid credentials");
+      }
+    } catch (error) {
+      console.error("Login Error:", error);
+      Alert.alert("Error", "Something went wrong. Please try again.");
+    }
   };
 
   const navigateToRegister = () => {
     navigation.navigate("Register");
   };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>
@@ -27,21 +54,20 @@ export default function LoginScreen({ navigation }) {
       <Text style={styles.placeholderText}>Email address</Text>
       <TextInput
         style={styles.input}
-        placeholder="jogndoe@gmail.com"
+        placeholder="johndoe@gmail.com"
         value={email}
         onChangeText={(text) => setEmail(text)}
-        required
+        keyboardType="email-address"
       />
       <Text style={styles.placeholderText}>Password</Text>
       <TextInput
         secureTextEntry
         style={styles.input}
-        placeholder="enter password"
+        placeholder="Enter password"
         value={password}
         onChangeText={(text) => setPassword(text)}
-        required
       />
-      <TouchableOpacity style={styles.btnContainer} onPress={navigateToHome}>
+      <TouchableOpacity style={styles.btnContainer} onPress={handleLogin}>
         <Text style={styles.btnText}>Sign In</Text>
       </TouchableOpacity>
       <View style={styles.dont}>
@@ -61,9 +87,6 @@ const styles = StyleSheet.create({
     flex: 1,
     marginHorizontal: 20,
     alignItems: "left",
-  },
-  inputView: {
-    width: "100%",
   },
   dont: {
     width: "100%",
@@ -87,7 +110,6 @@ const styles = StyleSheet.create({
     height: 100,
     width: "100%",
     marginTop: 50,
-    // backgroundColor: "aliceblue",
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 30,
@@ -105,7 +127,6 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     marginTop: 30,
     width: "100%",
-    // marginBottom: 10,
   },
   btnText: {
     color: "#fff",
