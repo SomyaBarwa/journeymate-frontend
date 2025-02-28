@@ -13,6 +13,7 @@ import MapScreen from './app/screens/MapScreen';
 import { LocationProvider } from './app/context/LocationContext';
 import FrontCameraScreen from './app/screens/FrontCameraScreen';
 import GraphScreen from './app/screens/GraphScreen';
+import WeatherScreen from './app/screens/WeatherScreen';
 
 const Stack = createStackNavigator();
 
@@ -31,6 +32,7 @@ export default function App() {
           <Stack.Screen name="Profile" component={ProfileScreen} />
           <Stack.Screen name="Map" component={MapScreen} />
           <Stack.Screen name="Graph" component={GraphScreen} />
+          <Stack.Screen name="Weather" component={WeatherScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </LocationProvider>

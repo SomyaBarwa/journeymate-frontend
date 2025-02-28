@@ -41,6 +41,9 @@ export default function ProfileScreen() {
         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("Map")}>
           <Text style={styles.buttonText}>Directions</Text>
         </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("Weather")}>
+          <Text style={styles.buttonText}>Weather</Text>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
