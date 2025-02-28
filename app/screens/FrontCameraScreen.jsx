@@ -13,11 +13,12 @@ export default function FrontCameraScreen() {
   const [cameraPermission, requestCameraPermission] = useCameraPermissions();
   const [micPermission, requestMicPermission] = useMicrophonePermissions();
   const [isCapturing, setIsCapturing] = useState(false);
-  const [captureInterval, setCaptureInterval] = useState(null);
   const [cameraError, setCameraError] = useState(null);
   const [isAlarmActive, setIsAlarmActive] = useState(false);
   const alarmSound = useRef(new Audio.Sound());
   const slideAnim = useRef(new Animated.Value(0)).current;
+  const captureTimeout = useRef(null);
+  const isCapturingRef = useRef(false);
 
   useEffect(() => {
     requestPermissions();
@@ -25,6 +26,7 @@ export default function FrontCameraScreen() {
   
     return () => {
       stopAlarm(); 
+      stopCapturing(); 
     };
   }, []);
   
@@ -48,6 +50,8 @@ export default function FrontCameraScreen() {
   const playAlarm = async () => {
     setIsAlarmActive(true);
     try {
+      const timestamp = new Date().toLocaleTimeString();
+      console.log(`[${timestamp}] ALARM RINGING! Drowsiness detected.`);
       await alarmSound.current.setIsLoopingAsync(true);
       await alarmSound.current.playAsync();
     } catch (error) {
@@ -65,8 +69,12 @@ export default function FrontCameraScreen() {
   };
 
   const capturePhoto = async () => {
+    if (!isCapturingRef.current) return;
     if (cameraRef.current) {
       try {
+        const timestamp = new Date().toLocaleTimeString();
+        console.log(`[${timestamp}] Capturing photo...`);
+
         const photo = await cameraRef.current.takePictureAsync({ base64: true });
         console.log("Captured Photo URI:", photo.uri);
 
@@ -119,25 +127,33 @@ export default function FrontCameraScreen() {
     }
   };
 
+  // Recursive scheduling using the ref for up-to-date status.
+  const scheduleCapture = () => {
+    console.log("in schedule capture", isCapturingRef.current);
+    if (isCapturingRef.current) {
+      capturePhoto();
+      captureTimeout.current = setTimeout(scheduleCapture, 10000);
+    }
+  };
+
   const startCapturing = () => {
     if (!cameraPermission || cameraPermission.status !== "granted") {
       Alert.alert("Permission Required", "Camera permission is required.");
       return;
     }
+    if (isCapturingRef.current) return; 
 
     setIsCapturing(true);
-    const interval = setInterval(() => {
-      capturePhoto();
-    }, 10000);
-
-    setCaptureInterval(interval);
+    isCapturingRef.current = true;
+    scheduleCapture();
   };
 
   const stopCapturing = () => {
     setIsCapturing(false);
-    if (captureInterval) {
-      clearInterval(captureInterval);
-      setCaptureInterval(null);
+    isCapturingRef.current = false;
+    if (captureTimeout.current) {
+      clearTimeout(captureTimeout.current);
+      captureTimeout.current = null;
     }
   };
 
@@ -152,10 +168,19 @@ export default function FrontCameraScreen() {
     onPanResponderRelease: async (_evt, gestureState) => {
       if (gestureState.dx > 150) { 
         await stopAlarm();
-        startCapturing();
-        Animated.timing(slideAnim, { toValue: 0, duration: 200, useNativeDriver: true }).start();
+        Animated.timing(slideAnim, { 
+          toValue: 0, 
+          duration: 200, 
+          useNativeDriver: true 
+        }).start(() => {
+          startCapturing();
+        });
       } else {
-        Animated.timing(slideAnim, { toValue: 0, duration: 200, useNativeDriver: true }).start();
+        Animated.timing(slideAnim, { 
+          toValue: 0, 
+          duration: 200, 
+          useNativeDriver: true 
+        }).start();
       }
     },
   });
@@ -165,7 +190,17 @@ export default function FrontCameraScreen() {
   return (
     <View style={styles.container}>
       {isAlarmActive ? (
-        <View style={[styles.camera, { backgroundColor: "white" }]} />
+        <View style={[styles.camera, { backgroundColor: "white" }]}>
+          <View style={styles.alarmContainer}>
+            <Text style={styles.alarmText}>Drowsiness Detected!</Text>
+            <View style={styles.slideContainer} {...panResponder.panHandlers}>
+              <Animated.View style={[styles.slideButton, { transform: [{ translateX: slideAnim }] }]}>
+                <Text style={styles.slideArrow}>➤</Text>
+              </Animated.View>
+              <Text style={styles.slideText}>Slide to Dismiss Alarm</Text>
+            </View>
+          </View>
+        </View>
       ) : (
         <>
           <CameraView ref={cameraRef} style={styles.camera} facing={"front"} />
@@ -178,18 +213,6 @@ export default function FrontCameraScreen() {
             />
           </View>
         </>
-      )}
-
-      {isAlarmActive && (
-        <View style={styles.alarmContainer}>
-          <Text style={styles.alarmText}>Drowsiness Detected!</Text>
-          <View style={styles.slideContainer} {...panResponder.panHandlers}>
-            <Animated.View style={[styles.slideButton, { transform: [{ translateX: slideAnim }] }]}>
-              <Text style={styles.slideArrow}>➤</Text>
-            </Animated.View>
-            <Text style={styles.slideText}>Slide to Stop Alarm</Text>
-          </View>
-        </View>
       )}
 
       {cameraError && <Text style={styles.errorText}>Error: {cameraError}</Text>}
