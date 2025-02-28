@@ -54,7 +54,7 @@ export default function CameraScreen() {
       }
       
       const formData = new FormData();
-      formData.append("frame", {
+      formData.append("image", {
         uri: uri,
         name: `image_${Date.now()}.jpg`,
         type: "image/jpeg",
@@ -63,7 +63,7 @@ export default function CameraScreen() {
       
       // Correct axios usage
       const response = await axios.post(
-        "http://IPCONFIG_IP:5000/api_path",
+        "http://IPCONFIG_IP:5000/detect",
         formData,
         {
           headers: {
