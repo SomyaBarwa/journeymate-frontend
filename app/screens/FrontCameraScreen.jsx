@@ -144,14 +144,14 @@ export default function FrontCameraScreen() {
   const panResponder = PanResponder.create({
     onStartShouldSetPanResponder: () => true,
     onMoveShouldSetPanResponder: () => true,
-    onPanResponderMove: (evt, gestureState) => {
+    onPanResponderMove: (_evt, gestureState) => {
       if (gestureState.dx > 0) {
         slideAnim.setValue(gestureState.dx);
       }
     },
-    onPanResponderRelease: async (evt, gestureState) => {
+    onPanResponderRelease: async (_evt, gestureState) => {
       if (gestureState.dx > 150) { 
-        stopAlarm();
+        await stopAlarm();
         startCapturing();
         Animated.timing(slideAnim, { toValue: 0, duration: 200, useNativeDriver: true }).start();
       } else {
@@ -164,13 +164,21 @@ export default function FrontCameraScreen() {
 
   return (
     <View style={styles.container}>
-      <CameraView 
-        ref={cameraRef}
-        style={styles.camera}
-        facing={"front"}
-      />
-
-      <LocationComp />
+      {isAlarmActive ? (
+        <View style={[styles.camera, { backgroundColor: "white" }]} />
+      ) : (
+        <>
+          <CameraView ref={cameraRef} style={styles.camera} facing={"front"} />
+          <LocationComp />
+          <View style={styles.bottomSection}>
+            <Button
+              title={isCapturing ? "Stop Capturing" : "Start Capturing"}
+              onPress={isCapturing ? stopCapturing : startCapturing}
+              color="#3B71F3"
+            />
+          </View>
+        </>
+      )}
 
       {isAlarmActive && (
         <View style={styles.alarmContainer}>
@@ -183,14 +191,6 @@ export default function FrontCameraScreen() {
           </View>
         </View>
       )}
-
-      <View style={styles.bottomSection}>
-        <Button
-          title={isCapturing ? "Stop Capturing" : "Start Capturing"}
-          onPress={isCapturing ? stopCapturing : startCapturing}
-          color="#3B71F3"
-        />
-      </View>
 
       {cameraError && <Text style={styles.errorText}>Error: {cameraError}</Text>}
     </View>
@@ -244,7 +244,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "blue",
     borderRadius: 50,
-    padding: 10
+    padding: 10,
+    marginTop: 20,
   },
   slideButton: {
     width: 50,
