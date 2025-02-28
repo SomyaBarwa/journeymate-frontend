@@ -29,6 +29,33 @@ export default function FrontCameraScreen() {
       stopCapturing(); 
     };
   }, []);
+
+  useEffect(() => {
+    if (isAlarmActive) {
+      startAutoSwipeAnimation();
+    } else {
+      slideAnim.stopAnimation();
+    }
+  }, [isAlarmActive]);
+  
+  
+  const startAutoSwipeAnimation = () => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(slideAnim, {
+          toValue: 20,
+          duration: 500,
+          useNativeDriver: true,
+        }),
+        Animated.timing(slideAnim, {
+          toValue: 0,
+          duration: 500,
+          useNativeDriver: true,
+        }),
+      ])
+    ).start();
+  };
+
   
   const requestPermissions = async () => {
     if (!cameraPermission || cameraPermission.status !== "granted") {
@@ -160,30 +187,36 @@ export default function FrontCameraScreen() {
   const panResponder = PanResponder.create({
     onStartShouldSetPanResponder: () => true,
     onMoveShouldSetPanResponder: () => true,
+    onPanResponderGrant: () => {
+      slideAnim.stopAnimation();
+    },
     onPanResponderMove: (_evt, gestureState) => {
       if (gestureState.dx > 0) {
         slideAnim.setValue(gestureState.dx);
       }
     },
     onPanResponderRelease: async (_evt, gestureState) => {
-      if (gestureState.dx > 150) { 
+      if (gestureState.dx > 150) {
         await stopAlarm();
-        Animated.timing(slideAnim, { 
-          toValue: 0, 
-          duration: 200, 
-          useNativeDriver: true 
+        Animated.timing(slideAnim, {
+          toValue: 0,
+          duration: 200,
+          useNativeDriver: true
         }).start(() => {
           startCapturing();
         });
       } else {
-        Animated.timing(slideAnim, { 
-          toValue: 0, 
-          duration: 200, 
-          useNativeDriver: true 
-        }).start();
+        Animated.timing(slideAnim, {
+          toValue: 0,
+          duration: 200,
+          useNativeDriver: true,
+        }).start(() => {
+          if (isAlarmActive) startAutoSwipeAnimation();
+        });
       }
     },
   });
+  
 
   if (!cameraPermission || !micPermission) return <View />;
 
@@ -194,10 +227,14 @@ export default function FrontCameraScreen() {
           <View style={styles.alarmContainer}>
             <Text style={styles.alarmText}>Drowsiness Detected!</Text>
             <View style={styles.slideContainer} {...panResponder.panHandlers}>
-              <Animated.View style={[styles.slideButton, { transform: [{ translateX: slideAnim }] }]}>
-                <Text style={styles.slideArrow}>➤</Text>
+              <Animated.View style={[
+                styles.sosCircleWrapper,
+                { transform: [{ translateX: slideAnim }] }
+              ]}>
+                <View style={styles.sosCircle}>
+                  <Text style={styles.sosText}>I'm Awake</Text>
+                </View>
               </Animated.View>
-              <Text style={styles.slideText}>Slide to Dismiss Alarm</Text>
             </View>
           </View>
         </View>
@@ -249,26 +286,36 @@ const styles = StyleSheet.create({
     bottom: 120,
     left: 20,
     fontWeight: "bold",
+    fontSize:"90px"
   },
   alarmContainer: {
-    position: "absolute",
-    top: 50,
-    left: 20,
-    right: 20,
-    alignItems: "center"
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    // position: "absolute",
+    // top: 50,
+    // left: 20,
+    // right: 20,
+    // alignItems: "center"
   },
   alarmText: {
-    fontSize: 20,
+    fontSize: 40,
     fontWeight: "bold",
-    color: "red"
+    color: "red",
+    marginBottom: 30,
   },
   slideContainer: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "blue",
-    borderRadius: 50,
-    padding: 10,
-    marginTop: 20,
+    justifyContent: "center",
+    backgroundColor: "white",
+    borderRadius: 34,
+    overflow: "hidden",
+    width: "80%",
+    height: 70,
+    borderWidth: 4,
+    // borderColor: "#3B71F3"
+    borderColor: "rgb(124, 163, 255)"
   },
   slideButton: {
     width: 50,
@@ -285,5 +332,29 @@ const styles = StyleSheet.create({
   slideText: {
     color: "white",
     marginLeft: 20
+  },
+  sosCircleWrapper: {
+    position: "absolute",
+    left: 0,
+    zIndex: 2,
+  },
+  sosCircle: {
+    width: 100,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: "#3B71F3",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  sosText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 16,
+  },
+  slideLabel: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "600",
   },
 });
