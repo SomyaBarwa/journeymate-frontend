@@ -14,6 +14,7 @@ import { LocationProvider } from './app/context/LocationContext';
 import FrontCameraScreen from './app/screens/FrontCameraScreen';
 import GraphScreen from './app/screens/GraphScreen';
 import WeatherScreen from './app/screens/WeatherScreen';
+import SplashScreen from './app/screens/SplashScreen';
 
 const Stack = createStackNavigator();
 
@@ -23,6 +24,7 @@ export default function App() {
     <LocationProvider>
       <NavigationContainer>
         <Stack.Navigator screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="Splash" component={SplashScreen} />
           <Stack.Screen name="Welcome" component={WelcomeScreen} />
           <Stack.Screen name="Register" component={RegisterScreen} />
           <Stack.Screen name="Login" component={LoginScreen} />

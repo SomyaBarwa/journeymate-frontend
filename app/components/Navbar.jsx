@@ -9,11 +9,15 @@ export default function Navbar() {
     navigation.navigate('Profile');
   };
 
+  const navigateToHome = () => {
+    navigation.navigate('Home');
+  };
+
   return (
     <SafeAreaView style={styles.navbarContainer}>
       <View style={styles.navContent}>
         <View>
-          <Text style={styles.navbarTitle}>JOURNEYMATE</Text>
+          <Text style={styles.navbarTitle} onPress={navigateToHome}>JOURNEYMATE</Text>
           <Text style={styles.navbarTitle2}>Hi! There</Text>
         </View>
 
