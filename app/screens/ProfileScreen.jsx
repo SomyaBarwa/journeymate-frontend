@@ -1,5 +1,5 @@
 import React from 'react';
-import { SafeAreaView, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { SafeAreaView, View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native'; 
 import Navbar from '../components/Navbar';
 
@@ -12,6 +12,20 @@ export default function ProfileScreen() {
     id: "12345",
     number: "+91 1234567890",
     address: "JPM CHSL, MULUND EAST, MUMBAI 400081"
+  };
+
+  const handleLogout = () => {
+    Alert.alert(
+      "Logout",
+      "Are you sure you want to log out?",
+      [
+        { text: "Cancel", style: "cancel" },
+        { 
+          text: "Logout", 
+          onPress: () => navigation.replace("Login") 
+        }
+      ]
+    );
   };
 
   return (
@@ -45,6 +59,11 @@ export default function ProfileScreen() {
           <Text style={styles.buttonText}>Weather</Text>
         </TouchableOpacity>
       </View>
+
+      {/* Logout Button */}
+      <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+        <Text style={styles.logoutButtonText}>Logout</Text>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 }
@@ -89,5 +108,17 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 16,
   },
+  logoutButton: {
+    backgroundColor: "#FF3B30",
+    padding: 15,
+    borderRadius: 8,
+    marginTop: 20,
+    width: "90%",
+    alignItems: "center",
+  },
+  logoutButtonText: {
+    color: "#fff",
+    fontSize: 20,
+    fontWeight: "bold",
+  },
 });
-

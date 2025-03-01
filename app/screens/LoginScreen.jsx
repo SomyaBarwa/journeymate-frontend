@@ -6,6 +6,7 @@ import {
   TextInput,
   TouchableOpacity,
   Alert,
+  ImageBackground,
 } from "react-native";
 import React, { useState } from "react";
 
@@ -32,7 +33,7 @@ export default function LoginScreen({ navigation }) {
 
       if (response.ok) {
         Alert.alert("Success", "Login successful!");
-        navigation.navigate("Home"); // Navigate to Home on success
+        navigation.navigate("Home");
       } else {
         Alert.alert("Error", data.message || "Invalid credentials");
       }
@@ -47,46 +48,60 @@ export default function LoginScreen({ navigation }) {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.headerContainer}>
-        <Text style={styles.header}>Sign In</Text>
-      </View>
-      <Text style={styles.placeholderText}>Email address</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="johndoe@gmail.com"
-        value={email}
-        onChangeText={(text) => setEmail(text)}
-        keyboardType="email-address"
-      />
-      <Text style={styles.placeholderText}>Password</Text>
-      <TextInput
-        secureTextEntry
-        style={styles.input}
-        placeholder="Enter password"
-        value={password}
-        onChangeText={(text) => setPassword(text)}
-      />
-      <TouchableOpacity style={styles.btnContainer} onPress={handleLogin}>
-        <Text style={styles.btnText}>Sign In</Text>
-      </TouchableOpacity>
-      <View style={styles.dont}>
-        <Text style={styles.dontText}>
-          Don't have an account?{" "}
-          <Text style={styles.dontLink} onPress={navigateToRegister}>
-            Sign Up
+    <ImageBackground
+      source={require("../assets/getstarted.png")} 
+      style={styles.background}
+      blurRadius={1} 
+    >
+      <SafeAreaView style={styles.container}>
+        <View style={styles.headerContainer}>
+          <Text style={styles.header}>Sign In</Text>
+        </View>
+        <Text style={styles.placeholderText}>Email address</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="johndoe@gmail.com"
+          value={email}
+          onChangeText={(text) => setEmail(text)}
+          keyboardType="email-address"
+        />
+        <Text style={styles.placeholderText}>Password</Text>
+        <TextInput
+          secureTextEntry
+          style={styles.input}
+          placeholder="Enter password"
+          value={password}
+          onChangeText={(text) => setPassword(text)}
+        />
+        <TouchableOpacity style={styles.btnContainer} onPress={handleLogin}>
+          <Text style={styles.btnText}>Sign In</Text>
+        </TouchableOpacity>
+        <View style={styles.dont}>
+          <Text style={styles.dontText}>
+            Don't have an account?{" "}
+            <Text style={styles.dontLink} onPress={navigateToRegister}>
+              Sign Up
+            </Text>
           </Text>
-        </Text>
-      </View>
-    </SafeAreaView>
+        </View>
+      </SafeAreaView>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+    width: "100%",
+    height: "100%",
+    resizeMode: "cover",
+  },
   container: {
     flex: 1,
     marginHorizontal: 20,
     alignItems: "left",
+    // backgroundColor: "rgba(255, 255, 255, 0.6)", // Light overlay for contrast
+    paddingVertical: 30,
   },
   dont: {
     width: "100%",
@@ -99,12 +114,14 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   input: {
-    height: 40,
+    height: 50,
     width: "100%",
     marginVertical: 20,
     borderWidth: 1,
     padding: 10,
     fontSize: 20,
+    backgroundColor: "rgba(255, 255, 255, 0.8)", // Slight transparency for inputs
+    borderRadius: 10,
   },
   headerContainer: {
     height: 100,
@@ -138,3 +155,4 @@ const styles = StyleSheet.create({
     fontWeight: "300",
   },
 });
+
