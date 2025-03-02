@@ -4,6 +4,8 @@ import { CameraView, useCameraPermissions, useMicrophonePermissions } from "expo
 import LocationComp from "../components/LocationComp";
 import * as FileSystem from "expo-file-system";
 import axios from "axios";
+import * as Speech from "expo-speech";
+import messageMapping from "../data/MessageMapping";
 
 export default function CameraScreen() {
   const cameraRef = useRef(null);
@@ -73,6 +75,19 @@ export default function CameraScreen() {
       );
       console.log('4-----', response.data);
       
+      let detectedObject = Array.isArray(response.data)
+        ? response.data[0]
+        : response.data;
+      
+      if (detectedObject && detectedObject.class_name) {
+        const className = detectedObject.class_name;
+        const speechMessage = messageMapping[className] || `Detected ${className}`;
+        Speech.speak(speechMessage);
+      }
+      else{
+        Speech.speak("No traffic signs detected.")
+      }
+      
       console.log("Photo uploaded successfully");
     } catch (error) {
       console.error("Error sending photo:", error.message);
@@ -89,7 +104,7 @@ export default function CameraScreen() {
     setIsCapturing(true);
     const interval = setInterval(() => {
       capturePhoto();
-    }, 2000);
+    }, 6000);
 
     setCaptureInterval(interval);
   };
