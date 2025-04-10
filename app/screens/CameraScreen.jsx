@@ -14,9 +14,15 @@ export default function CameraScreen() {
   const [isCapturing, setIsCapturing] = useState(false);
   const [captureInterval, setCaptureInterval] = useState(null);
   const [cameraError, setCameraError] = useState(null);
+  const previousClassNameRef = useRef(null); 
 
   useEffect(() => {
     requestPermissions();
+    return () => {
+      if (captureInterval) {
+        clearInterval(captureInterval);
+      }
+    };
   }, []);
 
   // Request Camera & Microphone Permissions
@@ -35,9 +41,7 @@ export default function CameraScreen() {
       try {
         const photo = await cameraRef.current.takePictureAsync({ base64: true });
         console.log("Captured Photo URI:", photo.uri);
-
-        // Send photo to backend
-        const res=await sendPhotoToBackend(photo.uri);
+        await sendPhotoToBackend(photo.uri);
       } catch (error) {
         console.error("Error capturing photo:", error);
         setCameraError(error.message);
@@ -45,11 +49,9 @@ export default function CameraScreen() {
     }
   };
 
-
   const sendPhotoToBackend = async (uri) => {
     try {
       const fileInfo = await FileSystem.getInfoAsync(uri);
-      console.log('1----', fileInfo);
       if (!fileInfo.exists) {
         console.error("File does not exist:", uri);
         return;
@@ -61,11 +63,9 @@ export default function CameraScreen() {
         name: `image_${Date.now()}.jpg`,
         type: "image/jpeg",
       });
-      console.log('3----', formData);
       
-      // Correct axios usage
       const response = await axios.post(
-        "http://IPCONFIG_IP:5000/detect",
+        "http://192.168.0.103:5000/detect",
         formData,
         {
           headers: {
@@ -73,28 +73,28 @@ export default function CameraScreen() {
           },
         }
       );
-      console.log('4-----', response.data);
       
       let detectedObject = Array.isArray(response.data)
         ? response.data[0]
         : response.data;
       
-      if (detectedObject && detectedObject.class_name) {
-        const className = detectedObject.class_name;
-        const speechMessage = messageMapping[className] || `Detected ${className}`;
+      let className = detectedObject?.class_name || null;
+      
+      if (className !== previousClassNameRef.current) {
+        let speechMessage = className 
+          ? (messageMapping[className] || `Detected ${className}`)
+          : "No traffic signs detected.";
+        
         Speech.speak(speechMessage);
-      }
-      else{
-        Speech.speak("No traffic signs detected.")
+        previousClassNameRef.current = className; 
       }
       
-      console.log("Photo uploaded successfully");
     } catch (error) {
       console.error("Error sending photo:", error.message);
     }
   };
 
-  // Start capturing photos every 2 seconds
+  // Start capturing photos every 6 seconds
   const startCapturing = () => {
     if (!cameraPermission || cameraPermission.status !== "granted") {
       Alert.alert("Permission Required", "Camera permission is required.");
@@ -141,7 +141,6 @@ export default function CameraScreen() {
 
       <LocationComp />
 
-      {/* Bottom White Section */}
       <View style={styles.bottomSection}>
         <Button
           title={isCapturing ? "Stop Capturing" : "Start Capturing"}
