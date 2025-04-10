@@ -39,7 +39,11 @@ export default function CameraScreen() {
   const capturePhoto = async () => {
     if (cameraRef.current) {
       try {
-        const photo = await cameraRef.current.takePictureAsync({ base64: true });
+        const photo = await cameraRef.current.takePictureAsync({ 
+          base64: true,
+          quality: 0.8,
+          skipProcessing: true
+        });
         console.log("Captured Photo URI:", photo.uri);
         await sendPhotoToBackend(photo.uri);
       } catch (error) {
@@ -80,14 +84,22 @@ export default function CameraScreen() {
       
       let className = detectedObject?.class_name || null;
       
+      // Only speak if we have a valid detection and it's different from previous
+      if (className && className !== previousClassNameRef.current) {
+        const speechMessage = messageMapping[className] || `Detected ${className}`;
+        Speech.speak(speechMessage);
+        previousClassNameRef.current = className;
+      }
+
+      /*
       if (className !== previousClassNameRef.current) {
         let speechMessage = className 
           ? (messageMapping[className] || `Detected ${className}`)
           : "No traffic signs detected.";
-        
         Speech.speak(speechMessage);
         previousClassNameRef.current = className; 
       }
+      */
       
     } catch (error) {
       console.error("Error sending photo:", error.message);
