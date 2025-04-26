@@ -118,12 +118,11 @@ export default function FrontCameraScreen() {
   const sendPhotoToBackend = async (uri) => {
     try {
       const fileInfo = await FileSystem.getInfoAsync(uri);
-      console.log('1----', fileInfo);
       if (!fileInfo.exists) {
         console.error("File does not exist:", uri);
         return;
       }
-
+  
       const formData = new FormData();
       formData.append("image", {
         uri: uri,
@@ -131,28 +130,35 @@ export default function FrontCameraScreen() {
         type: "image/jpeg",
       });
 
-      const response = await axios.post("http://192.168.1.13:5000/drowsiness", formData, {
+      const response = await axios.post("http://IPCONFIG_IP:5000/drowsiness", formData, {
         headers: { 
           "Content-Type": "multipart/form-data",
-         },
+        },
       });
-
-      console.log("Backend Response:", response.data[0]);
-
-      if (response.data && response.data.length > 0) {
-        const message = response.data[0].message;
-        const flag=response.data[0].drowsiness_detected;
-        Speech.speak(message);
-
-        if (flag) {
+  
+      const data = response.data;
+  
+      console.log("Backend Response:", data);
+  
+      // Handle both cases: array or single object
+      const result = Array.isArray(data) ? data[0] : data;
+  
+      if (result && result.message) {
+        Speech.speak(result.message);
+  
+        if (result.drowsiness_detected) {
           stopCapturing();
           playAlarm();
         }
+      } else {
+        console.log("Unexpected backend response:", result);
       }
+  
     } catch (error) {
       console.error("Error sending photo:", error.message);
     }
   };
+  
 
   // Recursive scheduling using the ref for up-to-date status.
   const scheduleCapture = () => {
