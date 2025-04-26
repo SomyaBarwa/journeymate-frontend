@@ -9,6 +9,7 @@ import {
   ImageBackground,
 } from "react-native";
 import React, { useState } from "react";
+import { API_IP,LOGIN_PORT} from "@env";
 
 export default function RegisterScreen({ navigation }) {
   const [email, setEmail] = useState("");
@@ -22,7 +23,7 @@ export default function RegisterScreen({ navigation }) {
     }
 
     try {
-      const response = await fetch("http://192.168.1.4:5000/api/auth/register", {
+      const response = await fetch(`http://${API_IP}:${LOGIN_PORT}/api/auth/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, email, password }),

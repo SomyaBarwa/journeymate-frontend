@@ -1,29 +1,19 @@
-import { View, Text, ScrollView, StyleSheet } from "react-native";
+import { View, Text, ScrollView, StyleSheet, Image } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import { LocationContext } from "../context/LocationContext";
+import { WEATHER_API_KEY } from "@env";
 
 export default function WeatherScreen() {
   const { currentLocation } = useContext(LocationContext);
   const [weatherData, setWeatherData] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  console.log(currentLocation.latitude,currentLocation.longitude)
-
   useEffect(() => {
     async function getCurrentWeather() {
-      const options = {
-        method: "GET",
-        headers: {
-          "x-rapidapi-key": "35646dbea5msh47cc576bae2f2c1p1c6c65jsn053d747717e2",
-          "x-rapidapi-host": "yahoo-weather5.p.rapidapi.com",
-        },
-      };
-
       try {
         const response = await fetch(
-          `https://yahoo-weather5.p.rapidapi.com/weather?lat=${currentLocation.latitude}&long=${currentLocation.longitude}&format=json&u=f`,
-          options
+          `http://api.weatherapi.com/v1/forecast.json?key=${WEATHER_API_KEY}&q=${currentLocation.latitude},${currentLocation.longitude}&days=7&aqi=no&alerts=no`
         );
         const result = await response.json();
         setWeatherData(result);
@@ -35,13 +25,13 @@ export default function WeatherScreen() {
     }
 
     if (currentLocation) {
-    //   getCurrentWeather();
+      getCurrentWeather();
     }
   }, [currentLocation]);
 
   if (loading) {
     return (
-      <View style={styles.mainContent}>
+      <View style={styles.loadingContainer}>
         <Text style={styles.loadingText}>Fetching weather data...</Text>
       </View>
     );
@@ -49,45 +39,97 @@ export default function WeatherScreen() {
 
   if (!weatherData) {
     return (
-      <View style={styles.mainContent}>
+      <View style={styles.loadingContainer}>
         <Text style={styles.errorText}>Failed to load weather data</Text>
       </View>
     );
   }
 
-  const { location, current_observation, forecasts } = weatherData;
-  const { temperature, text } = current_observation.condition;
-  const { sunrise, sunset } = current_observation.astronomy;
-  const { humidity } = current_observation.atmosphere;
-  const windSpeed = current_observation.wind.speed;
+  const { location, current, forecast } = weatherData;
+  const temperature = current.temp_c;
+  const conditionText = current.condition.text;
+  const conditionIcon = `https:${current.condition.icon}`;
+  const windSpeed = current.wind_kph;
+  const humidity = current.humidity;
+  const feelsLike = current.feelslike_c;
+  const uvIndex = current.uv;
+  const visibility = current.vis_km;
+  const pressure = current.pressure_mb;
+  const sunrise = forecast.forecastday[0].astro.sunrise;
+  const sunset = forecast.forecastday[0].astro.sunset;
 
   return (
     <View style={styles.container}>
       <Navbar />
       <ScrollView style={styles.mainContent}>
-        <View style={styles.weatherCard}>
-          <Text style={styles.city}>{location.city}, {location.country}</Text>
-          <Text style={styles.temp}>{temperature}°F</Text>
-          <Text style={styles.condition}>{text}</Text>
-          <Text style={styles.details}>Wind: {windSpeed} mph | Humidity: {humidity}%</Text>
-          <Text style={styles.details}>Sunrise: {sunrise} | Sunset: {sunset}</Text>
+        {/* Top Section - City, Temp, Condition */}
+        <View style={styles.topSection}>
+          <Text style={styles.city}>{location.name}, {location.country}</Text>
+          <Image source={{ uri: conditionIcon }} style={styles.weatherIcon} />
+          <Text style={styles.temp}>{temperature}°C</Text>
+          <Text style={styles.condition}>{conditionText}</Text>
         </View>
 
         {/* Forecast Section */}
-        <Text style={styles.forecastTitle}>7-Day Forecast</Text>
+        <Text style={styles.sectionTitle}>Future Forecast</Text>
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
           style={styles.forecastContainer}
         >
-          {forecasts.slice(0, 7).map((day, index) => (
+          {forecast.forecastday.map((day, index) => (
             <View key={index} style={styles.forecastCard}>
-              <Text style={styles.forecastDay}>{day.day}</Text>
-              <Text style={styles.forecastTemp}>{day.high}°F</Text>
-              <Text style={styles.forecastCondition}>{day.text}</Text>
+              <Text style={styles.forecastDay}>
+                {new Date(day.date).toLocaleDateString('en-US', { weekday: 'short' })}
+              </Text>
+              <Image
+                source={{ uri: `https:${day.day.condition.icon}` }}
+                style={styles.forecastIcon}
+              />
+              <Text style={styles.forecastTemp}>
+                {day.day.maxtemp_c}° / {day.day.mintemp_c}°
+              </Text>
+              <Text style={styles.forecastRain}>🌧️ {day.day.daily_chance_of_rain}%</Text>
             </View>
           ))}
         </ScrollView>
+
+        {/* Weather Details Section */}
+        <Text style={styles.sectionTitle}>Weather Details</Text>
+        <View style={styles.detailsGrid}>
+          <View style={styles.detailItem}>
+            <Text style={styles.detailLabel}>Feels Like</Text>
+            <Text style={styles.detailValue}>{feelsLike}°C</Text>
+          </View>
+          <View style={styles.detailItem}>
+            <Text style={styles.detailLabel}>Humidity</Text>
+            <Text style={styles.detailValue}>{humidity}%</Text>
+          </View>
+          <View style={styles.detailItem}>
+            <Text style={styles.detailLabel}>Wind Speed</Text>
+            <Text style={styles.detailValue}>{windSpeed} km/h</Text>
+          </View>
+          <View style={styles.detailItem}>
+            <Text style={styles.detailLabel}>Visibility</Text>
+            <Text style={styles.detailValue}>{visibility} km</Text>
+          </View>
+          <View style={styles.detailItem}>
+            <Text style={styles.detailLabel}>Pressure</Text>
+            <Text style={styles.detailValue}>{pressure} mb</Text>
+          </View>
+          <View style={styles.detailItem}>
+            <Text style={styles.detailLabel}>UV Index</Text>
+            <Text style={styles.detailValue}>{uvIndex}</Text>
+          </View>
+          <View style={styles.detailItem}>
+            <Text style={styles.detailLabel}>Sunrise</Text>
+            <Text style={styles.detailValue}>{sunrise}</Text>
+          </View>
+          <View style={styles.detailItem}>
+            <Text style={styles.detailLabel}>Sunset</Text>
+            <Text style={styles.detailValue}>{sunset}</Text>
+          </View>
+        </View>
       </ScrollView>
     </View>
   );
@@ -96,90 +138,105 @@ export default function WeatherScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#E0F7FA",
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
     alignItems: "center",
-    justifyContent: "flex-start",
+    backgroundColor: "#E0F7FA",
   },
   mainContent: {
-    marginTop: 0,
-    width: "100%",
-    display: "flex",
     padding: 20,
-    backgroundColor: "#f9f9f9",
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    rowGap: 15,
   },
   loadingText: {
     fontSize: 18,
-    color: "black",
-    textAlign: "center",
-    marginTop: 20,
+    color: "#00796B",
   },
   errorText: {
     fontSize: 18,
     color: "red",
-    textAlign: "center",
-    marginTop: 20,
   },
-  weatherCard: {
+  topSection: {
     alignItems: "center",
-    padding: 20,
-    borderRadius: 20,
-    marginBottom: 20,
+    marginBottom: 30,
   },
   city: {
     fontSize: 28,
     fontWeight: "bold",
-    color: "#333",
+    color: "#004D40",
+  },
+  weatherIcon: {
+    width: 100,
+    height: 100,
   },
   temp: {
-    fontSize: 85,
-    fontWeight: "300",
-    color: "#333",
+    fontSize: 72,
+    fontWeight: "200",
+    color: "#004D40",
   },
   condition: {
     fontSize: 20,
-    color: "#555",
+    color: "#00796B",
   },
-  details: {
-    fontSize: 20,
-    color: "#666",
-    marginTop: 5,
-  },
-  forecastTitle: {
-    fontSize: 25,
+  sectionTitle: {
+    fontSize: 24,
     fontWeight: "bold",
-    color: "#333",
-    marginBottom: 10,
+    color: "#004D40",
+    marginBottom: 15,
   },
   forecastContainer: {
     flexDirection: "row",
-    backgroundColor: "#7bb9ff",
-    borderRadius: 20,
-    padding: 15,
+    marginBottom: 30,
   },
   forecastCard: {
+    backgroundColor: "#4DD0E1",
     padding: 15,
-    borderRadius: 10,
-    marginRight: 10,
+    borderRadius: 15,
+    marginRight: 15,
     alignItems: "center",
-    width: 100,
-    borderWidth: 1,
-    borderColor: "#e8e9ea",
+    width: 120,
   },
   forecastDay: {
     fontSize: 16,
     fontWeight: "bold",
     color: "#fff",
   },
-  forecastTemp: {
-    fontSize: 22,
-    fontWeight: "bold",
-    color: "#fff",
-    marginVertical: 5,
+  forecastIcon: {
+    width: 50,
+    height: 50,
+    marginVertical: 10,
   },
-  forecastCondition: {
+  forecastTemp: {
+    fontSize: 16,
+    color: "#fff",
+  },
+  forecastRain: {
+    fontSize: 12,
+    color: "#E1F5FE",
+    marginTop: 5,
+  },
+  detailsGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+    marginBottom: 30,
+  },
+  detailItem: {
+    width: "48%",
+    backgroundColor: "#B2EBF2",
+    padding: 15,
+    borderRadius: 15,
+    marginBottom: 15,
+  },
+  detailLabel: {
     fontSize: 14,
-    color: "#ddd",
+    color: "#00695C",
+  },
+  detailValue: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#004D40",
+    marginTop: 5,
   },
 });

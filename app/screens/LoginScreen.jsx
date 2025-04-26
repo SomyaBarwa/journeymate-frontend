@@ -9,6 +9,7 @@ import {
   ImageBackground,
 } from "react-native";
 import React, { useState } from "react";
+import { API_IP,LOGIN_PORT} from "@env";
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState("");
@@ -19,9 +20,9 @@ export default function LoginScreen({ navigation }) {
       Alert.alert("Error", "Please enter both email and password");
       return;
     }
-
+    console.log(API_IP)
     try {
-      const response = await fetch("http://192.168.1.4:5000/api/auth/login", {
+      const response = await fetch(`http://${API_IP}:${LOGIN_PORT}/api/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

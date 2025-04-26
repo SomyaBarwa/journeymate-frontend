@@ -6,6 +6,7 @@ import * as FileSystem from "expo-file-system";
 import axios from "axios";
 import * as Speech from "expo-speech";
 import messageMapping from "../data/MessageMapping";
+import { API_IP} from "@env";
 
 export default function CameraScreen() {
   const cameraRef = useRef(null);
@@ -69,7 +70,7 @@ export default function CameraScreen() {
       });
       
       const response = await axios.post(
-        "http://IPCONFIG_IP:5000/detect",
+        `http://${API_IP}:5000/detect`,
         formData,
         {
           headers: {

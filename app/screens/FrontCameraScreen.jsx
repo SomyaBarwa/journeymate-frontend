@@ -6,7 +6,8 @@ import * as FileSystem from "expo-file-system";
 import axios from "axios";
 import * as Speech from "expo-speech";
 import { Audio } from "expo-av"; 
-import alarmPlay from "../assets/alarm.mp3"
+import alarmPlay from "../assets/alarm.mp3";
+import { API_IP} from "@env";
 
 export default function FrontCameraScreen() {
   const cameraRef = useRef(null);
@@ -130,7 +131,7 @@ export default function FrontCameraScreen() {
         type: "image/jpeg",
       });
 
-      const response = await axios.post("http://IPCONFIG_IP:5000/drowsiness", formData, {
+      const response = await axios.post(`http://${API_IP}:5000/drowsiness`, formData, {
         headers: { 
           "Content-Type": "multipart/form-data",
         },
