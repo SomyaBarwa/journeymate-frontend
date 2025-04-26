@@ -25,6 +25,7 @@
     "expo-speech": "~13.0.1",
     "expo-status-bar": "~2.0.1",
     "expo-video": "^2.0.5",
+    "journeymate": "file:",
     "react": "18.3.1",
     "react-native": "0.76.7",
     "react-native-chart-kit": "^6.12.0",
