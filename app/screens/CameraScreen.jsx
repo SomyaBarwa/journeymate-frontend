@@ -65,7 +65,7 @@ export default function CameraScreen() {
       
       // Correct axios usage
       const response = await axios.post(
-        "http://IPCONFIG_IP:5000/detect",
+        "http://192.168.1.13:5000/detect",
         formData,
         {
           headers: {

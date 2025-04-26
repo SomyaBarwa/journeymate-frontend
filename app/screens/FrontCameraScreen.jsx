@@ -131,7 +131,7 @@ export default function FrontCameraScreen() {
         type: "image/jpeg",
       });
 
-      const response = await axios.post("http://IPCONFIG_IP:5000/drowsiness", formData, {
+      const response = await axios.post("http://192.168.1.13:5000/drowsiness", formData, {
         headers: { 
           "Content-Type": "multipart/form-data",
          },
